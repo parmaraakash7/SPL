@@ -1,0 +1,99 @@
+.teams-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.team-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.team-filter-button {
+  padding: 8px 16px;
+  border: 2px solid #4CAF50;
+  background-color: white;
+  color: #4CAF50;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.team-filter-button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.team-filter-button.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.team-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+  transform: translateY(-5px);
+}
+
+.team-card h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.team-budget {
+  font-size: 1.1em;
+  color: #4CAF50;
+  margin-bottom: 15px;
+}
+
+.team-players {
+  margin-top: 15px;
+}
+
+.team-players h4 {
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.player-name {
+  font-weight: 500;
+}
+
+.player-price {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.no-players {
+  color: #666;
+  font-style: italic;
+}
+
+.auth-required {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+} 

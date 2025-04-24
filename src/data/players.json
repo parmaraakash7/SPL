@@ -1,0 +1,28 @@
+{
+  "players": [
+    {
+      "id": 1,
+      "name": "Aakash",
+      "fullName": "Aakash Parmar",
+      "imagePath": "/images/players/aakash.jpg",
+      "setNumber": 1,
+      "basePrice": "2 Crore"
+    },
+    {
+      "id": 2,
+      "name": "Virat",
+      "fullName": "Virat Kohli",
+      "imagePath": "/images/players/virat.jpg",
+      "setNumber": 1,
+      "basePrice": "15 Crore"
+    },
+    {
+      "id": 3,
+      "name": "Rohit",
+      "fullName": "Rohit Sharma",
+      "imagePath": "/images/players/rohit.jpg",
+      "setNumber": 1,
+      "basePrice": "12 Crore"
+    }
+  ]
+} 
