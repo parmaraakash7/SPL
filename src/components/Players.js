@@ -9,9 +9,9 @@ import {
   Typography,
   Box,
   Paper,
-  Chip
+  Chip,
+  Stack
 } from '@mui/material';
-import { SportsCricket as CricketIcon } from '@mui/icons-material';
 
 function Players() {
   return (
@@ -27,15 +27,19 @@ function Players() {
 
       <Grid container spacing={3}>
         {playersData.players.map(player => (
-          <Grid item xs={12} sm={6} md={4} key={player.id}>
+          <Grid item xs={12} sm={6} md={player.setNumber === 0 ? 6 : 4} key={player.id}>
             <Card 
               sx={{ 
                 height: '100%',
+                width: '100%',
+                minWidth: '300px',
                 display: 'flex',
                 flexDirection: 'column',
-                transition: 'transform 0.2s',
+                backgroundColor: 'background.paper',
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  transform: 'scale(1.02)',
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
                 }
               }}
             >
@@ -44,24 +48,38 @@ function Players() {
                 height="300"
                 image={player.imagePath}
                 alt={player.name}
-                sx={{ objectFit: 'cover' }}
+                sx={{ 
+                  objectFit: 'cover',
+                  borderBottom: '1px solid rgba(255,255,255,0.1)',
+                }}
               />
               <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  {player.fullName}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
-                  <Chip
-                    icon={<CricketIcon />}
-                    label={`Set ${player.setNumber}`}
-                    color="primary"
-                    variant="outlined"
-                  />
-                  <Chip
-                    label={player.basePrice}
-                    color="secondary"
-                  />
-                </Box>
+                <Stack direction="column" alignItems="center" spacing={1}>
+                  <Typography variant="h5" component="h2" sx={{ color: 'text.primary', textAlign: 'center', fontWeight: 'bold' }}>
+                    {player.fullName}
+                  </Typography>
+                  {player.setNumber === 0 ? (
+                    <Chip
+                      label="Icon Player"
+                      sx={{
+                        backgroundColor: '#FFD700',
+                        color: 'black',
+                        fontSize: '1.1rem',
+                        padding: '8px 16px',
+                      }}
+                    />
+                  ) : (
+                    <Chip
+                      label={`Base Price: ${player.basePrice}`}
+                      sx={{
+                        backgroundColor: '#FFD700',
+                        color: 'black',
+                        fontSize: '1.1rem',
+                        padding: '8px 16px',
+                      }}
+                    />
+                  )}
+                </Stack>
               </CardContent>
             </Card>
           </Grid>

@@ -1,15 +1,67 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 export const TeamsContext = createContext();
 
 export function TeamsProvider({ children }) {
-  const [teams, setTeams] = useState([
-    { id: 1, name: 'Language Super Giants', budget: 30, players: [] },
-    { id: 2, name: 'Legacy Lions', budget: 30, players: [] },
-    { id: 3, name: 'Vision Knight Riders', budget: 30, players: [] }
-  ]);
-  const [soldPlayers, setSoldPlayers] = useState([]);
-  const [unsoldPlayers, setUnsoldPlayers] = useState([]);
+  // Load initial state from localStorage or use default values
+  const [teams, setTeams] = useState(() => {
+    const savedTeams = localStorage.getItem('teams');
+    return savedTeams ? JSON.parse(savedTeams) : [
+      { 
+        id: 1, 
+        name: 'Language Super Giants', 
+        budget: 30, 
+        players: [],
+        captain: 'Hitesh Kumar'
+      },
+      { 
+        id: 2, 
+        name: 'Legacy Lions', 
+        budget: 30, 
+        players: [],
+        captain: 'Raunak Das'
+      },
+      { 
+        id: 3, 
+        name: 'Vision Knight Riders', 
+        budget: 30, 
+        players: [],
+        captain: 'Siva Kailash Sachithanandam'
+      }
+    ];
+  });
+
+  const [soldPlayers, setSoldPlayers] = useState(() => {
+    const savedSoldPlayers = localStorage.getItem('soldPlayers');
+    return savedSoldPlayers ? JSON.parse(savedSoldPlayers) : [];
+  });
+
+  const [unsoldPlayers, setUnsoldPlayers] = useState(() => {
+    const savedUnsoldPlayers = localStorage.getItem('unsoldPlayers');
+    return savedUnsoldPlayers ? JSON.parse(savedUnsoldPlayers) : [];
+  });
+
+  const [currentRound, setCurrentRound] = useState(() => {
+    const savedRound = localStorage.getItem('currentRound');
+    return savedRound ? parseInt(savedRound) : 1;
+  });
+
+  // Save to localStorage whenever state changes
+  useEffect(() => {
+    localStorage.setItem('teams', JSON.stringify(teams));
+  }, [teams]);
+
+  useEffect(() => {
+    localStorage.setItem('soldPlayers', JSON.stringify(soldPlayers));
+  }, [soldPlayers]);
+
+  useEffect(() => {
+    localStorage.setItem('unsoldPlayers', JSON.stringify(unsoldPlayers));
+  }, [unsoldPlayers]);
+
+  useEffect(() => {
+    localStorage.setItem('currentRound', currentRound.toString());
+  }, [currentRound]);
 
   const updateTeams = (newTeams) => {
     setTeams(newTeams);
@@ -24,8 +76,8 @@ export function TeamsProvider({ children }) {
   };
 
   const moveToNextRound = () => {
-    // Reset unsold players list for the next round
     setUnsoldPlayers([]);
+    setCurrentRound(prev => prev + 1);
   };
 
   return (
@@ -34,6 +86,7 @@ export function TeamsProvider({ children }) {
         teams,
         soldPlayers,
         unsoldPlayers,
+        currentRound,
         updateTeams,
         addSoldPlayer,
         addUnsoldPlayer,

@@ -21,22 +21,40 @@ const Teams = () => {
         };
       case 'language super giants':
         return {
-          bgColor: '#E8222E', // LSG Red
+          bgColor: '#0057E2', // LSG Blue
           textColor: '#FFFFFF',
           accentColor: '#000000' // LSG Black
         };
       default:
         return {
-          bgColor: '#FFFFFF',
-          textColor: '#000000',
+          bgColor: '#1A1A1A',
+          textColor: '#FFFFFF',
           accentColor: '#1976D2'
         };
     }
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+    <Container 
+      maxWidth="lg" 
+      sx={{ 
+        py: 4,
+        backgroundColor: '#121212',
+        minHeight: '100vh',
+        color: '#FFFFFF'
+      }}
+    >
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        gutterBottom 
+        align="center" 
+        sx={{ 
+          mb: 4,
+          color: '#FFFFFF',
+          textShadow: '0 0 10px rgba(255,255,255,0.3)'
+        }}
+      >
         Teams
       </Typography>
       <Grid container spacing={4}>
@@ -51,8 +69,13 @@ const Teams = () => {
                   flexDirection: 'column',
                   backgroundColor: colors.bgColor,
                   color: colors.textColor,
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    boxShadow: `0 0 20px ${colors.accentColor}`
+                    transform: 'translateY(-5px)',
+                    boxShadow: `0 0 20px ${colors.accentColor}`,
+                    '& .MuiCardMedia-root': {
+                      transform: 'scale(1.05)',
+                    }
                   }
                 }}
               >
@@ -63,7 +86,12 @@ const Teams = () => {
                           team.name === 'Legacy Lions' ? 'lions' : 
                           team.name === 'Language Super Giants' ? 'lsg' : 'spl'}.png`}
                   alt={team.name}
-                  sx={{ objectFit: 'contain', p: 2 }}
+                  sx={{ 
+                    objectFit: 'contain', 
+                    p: 2,
+                    transition: 'transform 0.3s ease',
+                    backgroundColor: 'rgba(0,0,0,0.1)'
+                  }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography 
@@ -74,7 +102,8 @@ const Teams = () => {
                     sx={{ 
                       color: colors.textColor,
                       borderBottom: `2px solid ${colors.accentColor}`,
-                      pb: 1
+                      pb: 1,
+                      textShadow: '0 0 5px rgba(0,0,0,0.3)'
                     }}
                   >
                     {team.name}
@@ -88,7 +117,8 @@ const Teams = () => {
                       backgroundColor: colors.accentColor,
                       color: colors.bgColor,
                       p: 1,
-                      borderRadius: 1
+                      borderRadius: 1,
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                     }}
                   >
                     Budget: ₹{team.budget} Cr
@@ -97,20 +127,55 @@ const Teams = () => {
                     <Typography 
                       variant="subtitle1" 
                       gutterBottom
-                      sx={{ color: colors.textColor }}
+                      sx={{ 
+                        color: colors.textColor,
+                        textShadow: '0 0 5px rgba(0,0,0,0.3)'
+                      }}
                     >
                       Players ({team.players.length}):
                     </Typography>
                     {team.players.length > 0 ? (
-                      <ul style={{ color: colors.textColor }}>
+                      <ul style={{ 
+                        color: colors.textColor,
+                        listStyle: 'none',
+                        padding: 0,
+                        margin: 0
+                      }}>
                         {team.players.map((player) => (
-                          <li key={player.id}>
-                            {player.name} - ₹{player.price} Cr
+                          <li 
+                            key={player.id}
+                            style={{
+                              padding: '8px 0',
+                              borderBottom: `1px solid ${colors.accentColor}33`,
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
+                          >
+                            <span>{player.name}</span>
+                            <span style={{ 
+                              backgroundColor: colors.accentColor,
+                              color: colors.bgColor,
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              fontSize: '0.9em'
+                            }}>
+                              ₹{player.price} Cr
+                            </span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <Typography variant="body2" sx={{ color: colors.textColor }}>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: colors.textColor,
+                          textAlign: 'center',
+                          py: 2,
+                          backgroundColor: 'rgba(0,0,0,0.1)',
+                          borderRadius: 1
+                        }}
+                      >
                         No players yet
                       </Typography>
                     )}

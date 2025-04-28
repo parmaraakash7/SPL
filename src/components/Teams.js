@@ -15,7 +15,9 @@ import {
   Divider,
   Chip,
   ToggleButton,
-  ToggleButtonGroup
+  ToggleButtonGroup,
+  CardMedia,
+  Button
 } from '@mui/material';
 import {
   Group as GroupIcon,
@@ -31,12 +33,49 @@ function Teams() {
     setSelectedTeam(teamId === selectedTeam ? null : teamId);
   };
 
+  const getTeamLogo = (teamName) => {
+    switch (teamName) {
+      case 'Vision Knight Riders':
+        return '/images/logo/vkr.png';
+      case 'Legacy Lions':
+        return '/images/logo/lions.png';
+      case 'Language Super Giants':
+        return '/images/logo/lsg.png';
+      default:
+        return '/images/logo/spl.png';
+    }
+  };
+
+  const formatPrice = (price) => {
+    if (price >= 1) {
+      return `₹${price} Cr`;
+    } else {
+      const lakhs = Math.round(price * 100);
+      return `₹${lakhs} Lakhs`;
+    }
+  };
+
+  const handleResetAuction = () => {
+    if (window.confirm('Are you sure you want to reset the auction? This will clear all teams, players, and auction data.')) {
+      // Clear all localStorage data
+      localStorage.removeItem('teams');
+      localStorage.removeItem('soldPlayers');
+      localStorage.removeItem('unsoldPlayers');
+      localStorage.removeItem('currentRound');
+      
+      // Reload the page to reset all state
+      window.location.reload();
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Teams
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Teams
+          </Typography>
+        </Box>
         <Typography variant="subtitle1" color="text.secondary" align="center">
           View team details and their purchased players
         </Typography>
@@ -52,7 +91,7 @@ function Teams() {
         >
         {teams.map(team => (
             <ToggleButton
-            key={team.id}
+              key={team.id}
               value={team.id}
               sx={{ 
                 minWidth: 120,
@@ -64,8 +103,20 @@ function Teams() {
                   }
                 }
               }}
-          >
-            {team.name}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                  component="img"
+                  src={getTeamLogo(team.name)}
+                  alt={team.name}
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    objectFit: 'contain'
+                  }}
+                />
+                {team.name}
+              </Box>
             </ToggleButton>
         ))}
         </ToggleButtonGroup>
@@ -79,6 +130,8 @@ function Teams() {
               <Card 
                 sx={{ 
                   height: '100%',
+                  width: '100%',
+                  minWidth: '300px',
                   display: 'flex',
                   flexDirection: 'column',
                   transition: 'transform 0.2s',
@@ -89,12 +142,22 @@ function Teams() {
               >
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <GroupIcon sx={{ mr: 1, color: 'primary.main' }} />
+                    <Box
+                      component="img"
+                      src={getTeamLogo(team.name)}
+                      alt={team.name}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        objectFit: 'contain',
+                        mr: 2
+                      }}
+                    />
                     <Typography variant="h5" component="h2">
                       {team.name}
                     </Typography>
                   </Box>
-                  
+
                   <Chip
                     icon={<AccountBalanceIcon />}
                     label={`Remaining Budget: ₹${team.budget} Crore`}
@@ -108,33 +171,44 @@ function Teams() {
                     Players
                   </Typography>
                   
-                {team.players.length > 0 ? (
-                    <List>
-                    {team.players.map((player, index) => (
+                  <List>
+                    <ListItem>
+                      <ListItemText
+                        primary={`${team.captain} (C)`}
+                      />
+                    </ListItem>
+                    {team.players.length > 0 && <Divider />}
+                    {team.players.length > 0 ? (
+                      team.players.map((player, index) => (
                         <React.Fragment key={index}>
                           <ListItem>
                             <ListItemText
                               primary={player.fullName}
-                              secondary={`Set ${player.setNumber}`}
                             />
                             <ListItemSecondaryAction>
-                              <Chip
-                                icon={<PersonIcon />}
-                                label={`₹${player.soldPrice} Cr`}
-                                color="primary"
-                                variant="outlined"
-                              />
+                              {player.setNumber === 0 ? (
+                                <Typography color="primary">
+                                  Icon Player
+                                </Typography>
+                              ) : (
+                                <Typography color="primary">
+                                  {formatPrice(player.soldPrice)}
+                                </Typography>
+                              )}
                             </ListItemSecondaryAction>
                           </ListItem>
                           {index < team.players.length - 1 && <Divider />}
                         </React.Fragment>
-                    ))}
-                    </List>
-                ) : (
-                    <Typography color="text.secondary" align="center" sx={{ py: 2 }}>
-                      No players bought yet
-                    </Typography>
-                )}
+                      ))
+                    ) : (
+                      <ListItem>
+                        <ListItemText
+                          primary="No players bought yet"
+                          sx={{ color: 'text.secondary', textAlign: 'center' }}
+                        />
+                      </ListItem>
+                    )}
+                  </List>
                 </CardContent>
               </Card>
             </Grid>

@@ -54,11 +54,12 @@ const Home = () => {
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+          background: 'linear-gradient(135deg, #1976d2 0%, #2196f3 100%)',
           color: 'white',
           py: 8,
           position: 'relative',
           overflow: 'hidden',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
         }}
       >
         <Container maxWidth="lg">
@@ -73,16 +74,19 @@ const Home = () => {
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => navigate('/live-auction')}
+                onClick={() => navigate('/teams')}
                 sx={{
                   bgcolor: '#FDB913',
                   color: '#000',
                   '&:hover': {
                     bgcolor: '#FFC107',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
                   },
+                  transition: 'all 0.3s ease',
                 }}
               >
-                Join Live Auction
+                View Teams
               </Button>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -93,7 +97,11 @@ const Home = () => {
                 sx={{
                   width: '100%',
                   maxWidth: 400,
-                  filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))',
+                  filter: 'drop-shadow(0 0 20px rgba(0,0,0,0.2))',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
                 }}
               />
             </Grid>
@@ -118,7 +126,7 @@ const Home = () => {
                     flexDirection: 'column',
                     backgroundColor: colors.bgColor,
                     color: colors.textColor,
-                    transition: 'transform 0.3s',
+                    transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-8px)',
                       boxShadow: `0 0 20px ${colors.accentColor}`,
@@ -128,11 +136,18 @@ const Home = () => {
                   <CardMedia
                     component="img"
                     height="200"
-                    image={getTeamLogo(team.name)}
+                    image={`/images/logo/${team.name === 'Vision Knight Riders' ? 'vkr' : 
+                            team.name === 'Legacy Lions' ? 'lions' : 
+                            team.name === 'Language Super Giants' ? 'lsg' : 'spl'}.png`}
                     alt={team.name}
-                    sx={{ objectFit: 'contain', p: 2 }}
+                    sx={{ 
+                      objectFit: 'contain', 
+                      p: 2,
+                      backgroundColor: 'rgba(255,255,255,0.1)',
+                      transition: 'transform 0.3s ease',
+                    }}
                   />
-                  <CardContent sx={{ flexGrow: 1 }}>
+                  <CardContent>
                     <Typography
                       variant="h5"
                       component="h3"
@@ -154,6 +169,7 @@ const Home = () => {
                         color: colors.bgColor,
                         p: 1,
                         borderRadius: 1,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                       }}
                     >
                       Budget: ₹{team.budget} Cr
@@ -167,7 +183,7 @@ const Home = () => {
       </Container>
 
       {/* Statistics Section */}
-      <Box sx={{ bgcolor: '#f5f5f5', py: 8 }}>
+      <Box sx={{ py: 8, backgroundColor: '#f5f5f5' }}>
         <Container maxWidth="lg">
           <Typography variant="h4" component="h2" gutterBottom align="center" sx={{ mb: 6 }}>
             League Statistics
@@ -181,6 +197,10 @@ const Home = () => {
                   textAlign: 'center',
                   bgcolor: '#2E0854',
                   color: 'white',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                  },
                 }}
               >
                 <Typography variant="h3" gutterBottom>
@@ -197,6 +217,10 @@ const Home = () => {
                   textAlign: 'center',
                   bgcolor: '#E8222E',
                   color: 'white',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                  },
                 }}
               >
                 <Typography variant="h3" gutterBottom>
@@ -213,6 +237,10 @@ const Home = () => {
                   textAlign: 'center',
                   bgcolor: '#FDB913',
                   color: 'black',
+                  transition: 'transform 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-5px)',
+                  },
                 }}
               >
                 <Typography variant="h3" gutterBottom>
@@ -232,8 +260,13 @@ const Home = () => {
           sx={{
             p: 6,
             textAlign: 'center',
-            background: 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
+            background: 'linear-gradient(135deg, #1976d2 0%, #2196f3 100%)',
             color: 'white',
+            transition: 'transform 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+            },
           }}
         >
           <Typography variant="h4" component="h2" gutterBottom>
@@ -251,7 +284,10 @@ const Home = () => {
               color: '#000',
               '&:hover': {
                 bgcolor: '#FFC107',
+                transform: 'translateY(-2px)',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
               },
+              transition: 'all 0.3s ease',
             }}
           >
             View All Players

@@ -1,28 +1,34 @@
 {
   "players": [
-    {
-      "id": 1,
-      "name": "Aakash",
-      "fullName": "Aakash Parmar",
-      "imagePath": "/images/players/aakash.jpg",
-      "setNumber": 1,
-      "basePrice": "2 Crore"
-    },
-    {
-      "id": 2,
-      "name": "Virat",
-      "fullName": "Virat Kohli",
-      "imagePath": "/images/players/virat.jpg",
-      "setNumber": 1,
-      "basePrice": "15 Crore"
-    },
-    {
-      "id": 3,
-      "name": "Rohit",
-      "fullName": "Rohit Sharma",
-      "imagePath": "/images/players/rohit.jpg",
-      "setNumber": 1,
-      "basePrice": "12 Crore"
-    }
+    {"id": "sharan", "name": "Sharan", "fullName": "Sharan Allur", "imagePath": "/images/players/sharan.jpg", "setNumber": 0},
+    {"id": "ashok", "name": "Ashok", "fullName": "Ashok Senapati", "imagePath": "/images/players/ashok.jpg", "setNumber": 0},
+    {"id": "vikram", "name": "Vikram", "fullName": "Vikram N", "imagePath": "/images/players/vikram.jpg", "setNumber": 0},
+    {"id": "suman", "name": "Suman", "fullName": "Suman Kumar", "imagePath": "/images/players/suman.jpg", "setNumber": 0},
+    {"id": "manohara", "name": "Manohara", "fullName": "Manohara", "imagePath": "/images/players/manohara.jpg", "setNumber": 0},
+    {"id": "sajith", "name": "Sajith", "fullName": "Sajith", "imagePath": "/images/players/sajith.jpg", "setNumber": 0},
+    {"id": "rahul", "name": "Rahul", "fullName": "Rahul Jha", "imagePath": "/images/players/rahul.png", "setNumber": 1, "basePrice": "2 Crore"},
+    {"id": "devesh", "name": "Devesh", "fullName": "Devesh Raj", "imagePath": "/images/players/devesh.png", "setNumber": 1, "basePrice": "2 Crore"},
+    {"id": "prasanna", "name": "Prasanna", "fullName": "Prasanna R", "imagePath": "/images/players/prasanna.png", "setNumber": 1, "basePrice": "2 Crore"},
+    {"id": "sujay", "name": "Sujay", "fullName": "Sujay Mandal", "imagePath": "/images/players/sujay.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "achal", "name": "Achal", "fullName": "Achal Pratap Singh", "imagePath": "/images/players/achal.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "rohit", "name": "Rohit", "fullName": "Rohit Saxena", "imagePath": "/images/players/rohit.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "pranjal", "name": "Pranjal", "fullName": "Pranjal Thapliyal", "imagePath": "/images/players/pranjal.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "sachin", "name": "Sachin", "fullName": "Sachin Singh", "imagePath": "/images/players/sachin.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "skand", "name": "Skand", "fullName": "Skand Gupta", "imagePath": "/images/players/skand.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "jaladi", "name": "Jaladi", "fullName": "Jaladi Lakshmi Teja", "imagePath": "/images/players/jaladi.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "arnab", "name": "Arnab", "fullName": "Arnab Chakraborthy", "imagePath": "/images/players/arnab.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "abhinav", "name": "Abhinav", "fullName": "Abhinav Dwivedi", "imagePath": "/images/players/abhinav.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "n", "name": "N", "fullName": "N Goutham", "imagePath": "/images/players/n.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "jatin", "name": "Jatin", "fullName": "Jatin", "imagePath": "/images/players/jatin.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "akashat", "name": "Akashat", "fullName": "Akashat Shah", "imagePath": "/images/players/akashat.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "niket", "name": "Niket", "fullName": "Nike Agarwal", "imagePath": "/images/players/niket.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "dibyajyoti", "name": "Dibyajyoti", "fullName": "Dibyajyoti Patgiri", "imagePath": "/images/players/dibyajyoti.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "kodavanti", "name": "Kodavanti", "fullName": "Kodavanti Rama Sravanth", "imagePath": "/images/players/kodavanti.png", "setNumber": 3, "basePrice": "50 Lakhs"},
+    {"id": "adwaith", "name": "Adwaith", "fullName": "Adwaith Anand", "imagePath": "/images/players/adwaith.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "uttam", "name": "Uttam", "fullName": "Uttam Kumar", "imagePath": "/images/players/uttam.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "utsav", "name": "Utsav", "fullName": "Utsav Tiwari", "imagePath": "/images/players/utsav.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "azhan", "name": "Azhan", "fullName": "Azhan Ali", "imagePath": "/images/players/azhan.png", "setNumber": 2, "basePrice": "1 Crore"},
+    {"id": "aakash", "name": "Aakash", "fullName": "Aakash Parmar", "imagePath": "/images/players/aakash.png", "setNumber": 1, "basePrice": "2 Crore"},
+    {"id": "arya", "name": "Arya", "fullName": "Arya D", "imagePath": "/images/players/arya.png", "setNumber": 1, "basePrice": "2 Crore"}
   ]
 } 
