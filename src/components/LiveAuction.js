@@ -1,12 +1,42 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { TeamsContext } from '../context/TeamsContext';
 import playersData from '../data/players.json';
-import './LiveAuction.css';
+import ReactConfetti from 'react-confetti';
+import useSound from 'use-sound';
+import soldSound from '../assets/sold.mp3';
+import {
+  Box,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Paper,
+  Grid,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
+  Alert
+} from '@mui/material';
+import {
+  Search as SearchIcon,
+  Undo as UndoIcon,
+  CheckCircle as CheckCircleIcon,
+  Warning as WarningIcon,
+  Person as PersonIcon
+} from '@mui/icons-material';
 
 function LiveAuction() {
   const { isAuthenticated, login } = useContext(AuthContext);
-  const { teams, soldPlayers, updateTeams, addSoldPlayer } = useContext(TeamsContext);
+  const { teams, soldPlayers, unsoldPlayers, updateTeams, addSoldPlayer, addUnsoldPlayer, moveToNextRound } = useContext(TeamsContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -17,6 +47,25 @@ function LiveAuction() {
   const [bidHistory, setBidHistory] = useState([]);
   const [showSoldDialog, setShowSoldDialog] = useState(false);
   const [soldInfo, setSoldInfo] = useState(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [playSoldSound] = useSound(soldSound);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -47,7 +96,6 @@ function LiveAuction() {
   };
 
   const handleTeamBid = (teamId) => {
-    // Prevent consecutive bids from same team
     if (lastBiddingTeam === teamId) {
       alert(`${teams[teamId - 1].name} cannot bid consecutively!`);
       return;
@@ -56,16 +104,12 @@ function LiveAuction() {
     const nextBid = lastBiddingTeam ? calculateNextBid(currentBid) : currentBid;
     const team = teams[teamId - 1];
     
-    // Check if purse would go negative after deduction
     if (team.budget - nextBid < 0) {
       alert(`${team.name} does not have enough budget! Cannot make this bid as it would result in negative purse.`);
       return;
     }
 
-    // Save current state to history
     setBidHistory([...bidHistory, { teams: [...teams], currentBid, lastBiddingTeam }]);
-    
-    // Update current bid
     setCurrentBid(nextBid);
     setLastBiddingTeam(teamId);
   };
@@ -84,13 +128,11 @@ function LiveAuction() {
     if (selectedPlayer && lastBiddingTeam) {
       const team = teams[lastBiddingTeam - 1];
       
-      // Check if team can afford the final bid
       if (team.budget - currentBid < 0) {
         alert(`${team.name} cannot afford the final bid!`);
         return;
       }
 
-      // Deduct money from winning team
       const updatedTeams = teams.map(team => {
         if (team.id === lastBiddingTeam) {
           return { 
@@ -105,15 +147,15 @@ function LiveAuction() {
       updateTeams(updatedTeams);
       addSoldPlayer(selectedPlayer.id);
       
-      // Show sold dialog
       setSoldInfo({
         player: selectedPlayer,
         team: team.name,
         price: currentBid
       });
       setShowSoldDialog(true);
+      setShowConfetti(true);
+      playSoldSound();
       
-      // Reset auction state
       setSelectedPlayer(null);
       setCurrentBid(0);
       setLastBiddingTeam(null);
@@ -121,141 +163,263 @@ function LiveAuction() {
     }
   };
 
+  const handleMoveToNextRound = () => {
+    if (selectedPlayer) {
+      addUnsoldPlayer(selectedPlayer);
+      setSelectedPlayer(null);
+      setCurrentBid(0);
+      setLastBiddingTeam(null);
+      setBidHistory([]);
+    }
+  };
+
+  const handleRoundComplete = () => {
+    if (currentRound === 1) {
+      setCurrentRound(2);
+      moveToNextRound();
+    }
+  };
+
   if (!isAuthenticated) {
     return (
-      <div className="auth-dialog">
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button type="submit">Login</button>
-        </form>
-      </div>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '80vh'
+        }}
+      >
+        <Paper elevation={3} sx={{ p: 4, maxWidth: 400, width: '100%' }}>
+          <Typography variant="h5" component="h2" gutterBottom align="center">
+            Login
+          </Typography>
+          <Box component="form" onSubmit={handleLogin} sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              margin="normal"
+              required
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              margin="normal"
+              required
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ mt: 3 }}
+            >
+              Login
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
     );
   }
 
   return (
-    <div className="live-auction">
-      <div className="search-container">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search player..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowPlayerList(true);
+    <Box sx={{ p: 3 }}>
+      {showConfetti && (
+        <ReactConfetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+          onConfettiComplete={() => setShowConfetti(false)}
+        />
+      )}
+
+      <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
+        <Typography variant="h6" align="center">
+          Current Round: {currentRound}
+        </Typography>
+        {currentRound === 2 && (
+          <Alert severity="info" sx={{ mt: 1 }}>
+            This is Round 2 - featuring previously unsold players
+          </Alert>
+        )}
+      </Paper>
+
+      <Box sx={{ mb: 4 }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search player..."
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setShowPlayerList(true);
+          }}
+          onFocus={() => setShowPlayerList(true)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        {showPlayerList && (
+          <Paper
+            elevation={3}
+            sx={{
+              position: 'absolute',
+              zIndex: 1,
+              width: '100%',
+              maxHeight: 300,
+              overflow: 'auto',
+              mt: 1
             }}
-            onFocus={() => setShowPlayerList(true)}
-          />
-          {showPlayerList && (
-            <div className="player-list">
+          >
+            <List>
               {playersData.players
                 .filter(player => 
                   !soldPlayers.includes(player.id) &&
+                  (currentRound === 1 || unsoldPlayers.some(p => p.id === player.id)) &&
                   player.name.toLowerCase().includes(searchQuery.toLowerCase())
                 )
                 .map(player => (
-                  <div 
-                    key={player.id} 
-                    className="player-list-item"
+                  <ListItem
+                    key={player.id}
+                    button
                     onClick={() => handlePlayerSelect(player)}
                   >
-                    {player.name}
-                  </div>
+                    <ListItemText primary={player.name} />
+                  </ListItem>
                 ))}
-            </div>
-          )}
-        </div>
-      </div>
+            </List>
+          </Paper>
+        )}
+      </Box>
 
       {selectedPlayer && (
-        <div className="auction-area">
-          <div className="player-info">
-            <img src={selectedPlayer.imagePath} alt={selectedPlayer.name} />
-            <div className="player-details">
-              <h3>{selectedPlayer.fullName}</h3>
-              <p>Base Price: {selectedPlayer.basePrice}</p>
-              <p className="current-bid">Current Bid: ₹{currentBid} Crore</p>
-              {lastBiddingTeam && (
-                <p className="last-bidder">Last Bid by: {teams[lastBiddingTeam - 1].name}</p>
-              )}
-            </div>
-          </div>
-          <div className="team-buttons">
-            {teams.map(team => (
-              <button
-                key={team.id}
-                className={`team-button ${lastBiddingTeam === team.id ? 'active' : ''}`}
-                onClick={() => handleTeamBid(team.id)}
-                disabled={team.budget < (lastBiddingTeam ? calculateNextBid(currentBid) : currentBid)}
-              >
-                <span className="team-name">{team.name}</span>
-              </button>
-            ))}
-            <div className="action-buttons">
-              <button 
-                className="undo-button"
-                onClick={handleUndo}
-                disabled={bidHistory.length === 0}
-              >
-                Undo
-              </button>
-              <button 
-                className="sold-button"
-                onClick={handleSold}
-                disabled={!lastBiddingTeam}
-              >
-                Sold
-              </button>
-              <button 
-                className="unsold-button"
-                onClick={() => {
-                  setSelectedPlayer(null);
-                  setCurrentBid(0);
-                  setLastBiddingTeam(null);
-                  setBidHistory([]);
-                }}
-              >
-                Unsold for now
-              </button>
-            </div>
-          </div>
-        </div>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <Card>
+              <CardMedia
+                component="img"
+                height="300"
+                image={selectedPlayer.imagePath}
+                alt={selectedPlayer.name}
+              />
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  {selectedPlayer.fullName}
+                </Typography>
+                <Typography color="text.secondary" gutterBottom>
+                  Base Price: {selectedPlayer.basePrice}
+                </Typography>
+                <Chip
+                  icon={<PersonIcon />}
+                  label={`Current Bid: ₹${currentBid} Crore`}
+                  color="primary"
+                  sx={{ mt: 1 }}
+                />
+                {lastBiddingTeam && (
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    Last Bid by: {teams[lastBiddingTeam - 1].name}
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Paper elevation={3} sx={{ p: 3 }}>
+              <Grid container spacing={2}>
+                {teams.map(team => (
+                  <Grid item xs={12} sm={6} md={4} key={team.id}>
+                    <Button
+                      fullWidth
+                      variant={lastBiddingTeam === team.id ? "contained" : "outlined"}
+                      color="primary"
+                      onClick={() => handleTeamBid(team.id)}
+                      disabled={team.budget < (lastBiddingTeam ? calculateNextBid(currentBid) : currentBid)}
+                      sx={{ height: '100%' }}
+                    >
+                      <Box>
+                        <Typography variant="subtitle1">{team.name}</Typography>
+                        <Typography variant="caption" display="block">
+                          Budget: ₹{team.budget} Crore
+                        </Typography>
+                      </Box>
+                    </Button>
+                  </Grid>
+                ))}
+              </Grid>
+              <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<UndoIcon />}
+                  onClick={handleUndo}
+                  disabled={bidHistory.length === 0}
+                >
+                  Undo
+                </Button>
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<CheckCircleIcon />}
+                  onClick={handleSold}
+                  disabled={!lastBiddingTeam}
+                >
+                  Sold
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="warning"
+                  startIcon={<WarningIcon />}
+                  onClick={handleMoveToNextRound}
+                >
+                  Move to Round {currentRound + 1}
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
       )}
 
-      {showSoldDialog && (
-        <div className="sold-dialog-overlay">
-          <div className="sold-dialog">
-            <h2>Player Sold!</h2>
-            <div className="sold-info">
-              <img src={soldInfo.player.imagePath} alt={soldInfo.player.name} />
-              <div className="sold-details">
-                <h3>{soldInfo.player.fullName}</h3>
-                <p>Sold to: {soldInfo.team}</p>
-                <p className="sold-price">Price: ₹{soldInfo.price} Crore</p>
-              </div>
-            </div>
-            <button 
-              className="close-dialog"
-              onClick={() => setShowSoldDialog(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+      <Dialog
+        open={showSoldDialog}
+        onClose={() => setShowSoldDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Player Sold!</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
+            <CardMedia
+              component="img"
+              sx={{ width: 100, height: 100, borderRadius: 1 }}
+              image={soldInfo?.player.imagePath}
+              alt={soldInfo?.player.name}
+            />
+            <Box>
+              <Typography variant="h6">{soldInfo?.player.fullName}</Typography>
+              <Typography color="text.secondary">
+                Sold to: {soldInfo?.team}
+              </Typography>
+              <Chip
+                label={`Price: ₹${soldInfo?.price} Crore`}
+                color="primary"
+                sx={{ mt: 1 }}
+              />
+            </Box>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowSoldDialog(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
 
