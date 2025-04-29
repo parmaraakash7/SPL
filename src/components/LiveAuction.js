@@ -108,7 +108,6 @@ function LiveAuction() {
   };
 
   const calculateNextBid = (currentAmount) => {
-    console.log('Current Amount:', currentAmount);
     let nextBid;
     if (currentAmount < 1) {
       nextBid = Number((currentAmount + 0.1).toFixed(2));
@@ -117,7 +116,6 @@ function LiveAuction() {
     } else {
       nextBid = Number((currentAmount + 0.5).toFixed(2));
     }
-    console.log('Next Bid:', nextBid);
     return nextBid;
   };
 
@@ -240,7 +238,7 @@ function LiveAuction() {
 
   const formatBidAmount = (amount) => {
     if (amount >= 1) {
-      return `₹${amount.toFixed(2)} Cr`;
+      return `₹${Number(amount).toFixed(2)} Cr`;
     } else {
       const lakhs = Math.round(amount * 100);
       return `₹${lakhs} Lakhs`;
@@ -603,7 +601,7 @@ function LiveAuction() {
                       <Box sx={{ flexGrow: 1 }}>
                         <Typography variant="subtitle1">{team.name}</Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Budget: ₹{team.budget} Cr
+                          Budget: ₹{Number(team.budget).toFixed(2)} Cr
                         </Typography>
                         <Typography variant="caption" display="block" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
                           Captain: {team.captain}

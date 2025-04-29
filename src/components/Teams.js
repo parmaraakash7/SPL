@@ -160,7 +160,7 @@ function Teams() {
 
                   <Chip
                     icon={<AccountBalanceIcon />}
-                    label={`Remaining Budget: ₹${team.budget} Crore`}
+                    label={`Remaining Budget: ₹${Number(team.budget).toFixed(2)} Crore`}
                     color={team.budget > 0 ? "success" : "error"}
                     sx={{ mb: 2 }}
                   />
