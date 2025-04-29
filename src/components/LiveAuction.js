@@ -24,7 +24,11 @@ import {
   ListItem,
   ListItemText,
   Chip,
-  Alert
+  Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -64,6 +68,9 @@ function LiveAuction() {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const [showDraftDialog, setShowDraftDialog] = useState(false);
+  const [selectedDraftPlayer, setSelectedDraftPlayer] = useState('');
+  const [selectedDraftTeam, setSelectedDraftTeam] = useState('');
 
   useEffect(() => {
     const handleResize = () => {
@@ -258,6 +265,34 @@ function LiveAuction() {
     }
   };
 
+  const handleDraftPlayer = () => {
+    if (!selectedDraftPlayer || !selectedDraftTeam) {
+      alert('Please select both a player and a team');
+      return;
+    }
+
+    const team = teams.find(t => t.id === selectedDraftTeam);
+    const player = playersData.players.find(p => p.id === selectedDraftPlayer);
+
+    if (team && player) {
+      const updatedTeams = teams.map(t => {
+        if (t.id === team.id) {
+          return {
+            ...t,
+            players: [...t.players, { ...player, soldPrice: 0, isDrafted: true }]
+          };
+        }
+        return t;
+      });
+
+      updateTeams(updatedTeams);
+      addSoldPlayer(player.id);
+      setShowDraftDialog(false);
+      setSelectedDraftPlayer('');
+      setSelectedDraftTeam('');
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <Box
@@ -389,7 +424,15 @@ function LiveAuction() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setShowDraftDialog(true)}
+          startIcon={<PersonIcon />}
+        >
+          Draft Players
+        </Button>
         <Button
           variant="contained"
           color="error"
@@ -774,6 +817,60 @@ function LiveAuction() {
             }}
           >
             Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={showDraftDialog}
+        onClose={() => setShowDraftDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Draft Player to Team</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Select Player</InputLabel>
+              <Select
+                value={selectedDraftPlayer}
+                onChange={(e) => setSelectedDraftPlayer(e.target.value)}
+                label="Select Player"
+              >
+                {unsoldPlayers
+                  .filter(player => !soldPlayers.includes(player.id))
+                  .map(player => (
+                    <MenuItem key={player.id} value={player.id}>
+                      {player.fullName}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel>Select Team</InputLabel>
+              <Select
+                value={selectedDraftTeam}
+                onChange={(e) => setSelectedDraftTeam(e.target.value)}
+                label="Select Team"
+              >
+                {teams.map(team => (
+                  <MenuItem key={team.id} value={team.id}>
+                    {team.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDraftDialog(false)}>Cancel</Button>
+          <Button 
+            onClick={handleDraftPlayer}
+            variant="contained"
+            color="primary"
+            disabled={!selectedDraftPlayer || !selectedDraftTeam}
+          >
+            Draft Player
           </Button>
         </DialogActions>
       </Dialog>

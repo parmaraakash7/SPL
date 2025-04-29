@@ -190,6 +190,10 @@ function Teams() {
                                 <Typography color="primary">
                                   Icon Player
                                 </Typography>
+                              ) : player.isDrafted ? (
+                                <Typography color="primary">
+                                  Draft Player
+                                </Typography>
                               ) : (
                                 <Typography color="primary">
                                   {formatPrice(player.soldPrice)}
